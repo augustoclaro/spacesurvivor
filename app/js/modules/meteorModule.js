@@ -5,6 +5,7 @@ spaceship.module("meteorModule", [
             var _spriteSheet;
             const _config = $game.getConfig();
             const meteorObj = this;
+            var angle;
             meteorObj.destroyed = false;
             meteorObj.pos = {
                 rotate: 0
@@ -17,7 +18,8 @@ spaceship.module("meteorModule", [
                 $collision.watch("destroyMeteor","meteorModule", "bulletModule", function(meteor, bullet){
                     animationService.explosion($pos.getCenterPoint(meteor.pos, meteor.size));
                     $module.unload([meteor, bullet]);
-                    gameData.points+=3 * parseInt(gameData.level, 10);
+                    gameData.points += 3 * parseInt(gameData.level, 10);
+                    gameData.level += 3 * .0006;
                 });
                 $collision.watch("destroyPlayer","meteorModule", "playerModule", function(meteor, player){
                     animationService.explosion($pos.getCenterPoint(player.pos, player.size));
@@ -38,14 +40,19 @@ spaceship.module("meteorModule", [
                     });
                     meteorObj.pos.x = randomService.randomRange(0, _config.size.width - meteorObj.size.width);
                     meteorObj.pos.y = -(meteorObj.size.height);
+                    
+                    var _maxAngle = 1 - (meteorObj.pos.x / (_config.size.width - meteorObj.size.width));
+                    angle = randomService.randomFloat(_maxAngle - 1, _maxAngle);
+                    
                     next();
                 });
             };
             meteorObj.update = function () {
-                const _speed = 10 * gameData.level;
+                const _speed = 5 * gameData.level;
                 if (meteorObj.pos.y > _config.size.height)
                     $module.unload(meteorObj);
                 meteorObj.pos.y += _speed;
+                meteorObj.pos.x += _speed * angle;
                 meteorObj.pos.rotate += _speed;
             };
             meteorObj.render = function () {

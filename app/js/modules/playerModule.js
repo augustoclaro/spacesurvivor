@@ -69,6 +69,8 @@ spaceship.module("playerModule", [
                 }
                 if (pressedKeys.allKeys.indexOf($keys.SPACE) > -1)
                     _timedShoot.run();
+                if (pressedKeys.allKeys.indexOf(16) > -1)
+                    gameData.points+=10;
             };
             this.render = function () {
                 $renderer.renderSprite(_spriteSheet, "ship", playerObj.pos, playerObj.size);

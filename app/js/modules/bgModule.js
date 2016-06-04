@@ -19,7 +19,7 @@ spaceship.module("bgModule", [
                 next();
             };
             this.update = function () {
-                const _speed = 2 * gameData.level;
+                const _speed = 5 * gameData.level;
                 _stars = _stars.filter(function (star) {
                     return (star.y += _speed) <= _config.size.height;
                 });

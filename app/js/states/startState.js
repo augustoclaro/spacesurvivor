@@ -4,7 +4,8 @@ function ($module, $input, $keys, $state) {
     return function () {
         this.load = function (cb) {
             $module.load([
-                "startScreenModule"
+                "startScreenModule",
+                "shipSelectorModule"
             ], cb);
         };
         this.update = function (cb) {

@@ -1,31 +1,22 @@
 spaceship.module("playerModule", [
-    "animationService", "$timedFunction", "$game", "gameData", "$pos", "$renderer", "$imageLoader", "$sprite", "$input", "$keys", "$module",
-    function (animationService, $timedFunction, $game, gameData, $pos, $renderer, $imageLoader, $sprite, $input, $keys, $module) {
+    "animationService", "$timedFunction", "$game", "gameData", "$pos", "$renderer", "$input", "$keys", "$module",
+    function (animationService, $timedFunction, $game, gameData, $pos, $renderer, $input, $keys, $module) {
         return function () {
             var _spriteSheet;
             const playerObj = this;
             playerObj.pos = {
                 x: 275,
                 y: 490
-            },
-                playerObj.size = {
-                    width: 50
-                },
-                _config = $game.getConfig();
+            };
+            playerObj.size = {
+                width: 50
+            };
+            _config = $game.getConfig();
             this.load = function (next) {
-                $imageLoader.loadImages({
-                    ship: "img/sprites/ship.png"
-                }, function (images) {
-                    playerObj.size.height = images.ship.height / images.ship.width * playerObj.size.width;
-                    _spriteSheet = $sprite.create(images.ship, {
-                        height: images.ship.height,
-                        width: images.ship.width,
-                        sprites: [
-                            { name: "ship", x: 0, y: 0 }
-                        ]
-                    });
-                    next();
-                });
+                var shipSize = gameData.ship.size;
+                playerObj.size.height = shipSize.height / shipSize.width * playerObj.size.width;
+                _spriteSheet = gameData.ship.sprite;
+                next();
             };
 
             const _timedShoot = $timedFunction.create(function () {
@@ -70,7 +61,7 @@ spaceship.module("playerModule", [
                 if (pressedKeys.allKeys.indexOf($keys.SPACE) > -1)
                     _timedShoot.run();
                 if (pressedKeys.allKeys.indexOf(16) > -1)
-                    gameData.points+=10;
+                    gameData.points += 10;
             };
             this.render = function () {
                 $renderer.renderSprite(_spriteSheet, "ship", playerObj.pos, playerObj.size);

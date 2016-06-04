@@ -10,7 +10,7 @@ spaceship.state("mainState", [
                 ], cb);
             };
             const _getMeteorInterval = function () {
-                return 1000 / gameData.level; //corrigir intervalo dos metoros
+                return 1000 / gameData.level;
             };
             const timedMeteor = $timedFunction.create(function () {
                 var meteor = $module.create("meteorModule");

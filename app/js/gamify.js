@@ -1,1 +1,1002 @@
-const gamify=function(){const t=function(){const t=function(t){const n=[];for(var e in t)n.push(t[e]);return n},n=function(t){return"function"==typeof t},e=function(t){const n=arguments.length;if(2>n||!t)return t;const e=function(t,n,e){Object.defineProperty(n,e,Object.getOwnPropertyDescriptor(t,e))};for(var i=1;n>i;i++)for(var o=arguments[i],r=Object.getOwnPropertyNames(o),c=0;c<r.length;c++)e(o,t,r[c]);return t},i=function(t,n){var i=Object.create(n.prototype);e(i||{},t.prototype||{}),t.prototype=i},o=function(t,n){n.forEach(function(n){t.push(n)})},r=function(t){return{x:t.pos.x,y:t.pos.y,w:t.size.width,h:t.size.height}},c=function(t,n){return t.x<n.x+n.w&&t.x+t.w>n.x&&t.y<n.y+n.h&&t.y+t.h>n.y};return{extend:e,isFunction:n,allValues:t,inherit:i,pushMany:o,box:r,boxCollision:c}}(),n=function(t){const n={},e=function(){};return e.prototype.on=function(e,i){if(!e)throw"Event name can't be null";if(!t.isFunction(i))throw"Invalid event function";return n[e]||(n[e]=[]),n[e].push(i),this},e.prototype.emit=function(t){if(!t)throw"Event name can't be null";var e=Array.prototype.slice.call(arguments,1),i=n[t];i&&i.length&&i.forEach(function(t){t.apply(null,e)})},e}(t),e=function(t,n){const e=function(t,n,e,i){const o=this;o.id="anim-"+t.length+"-"+(new Date).getTime(),o.animating=!0,o.frameIndex=0;const r=t,c=n,a=e,s=i;var u=t[0].time;const f=function(t){t.renderSprite(c,r[o.frameIndex].sprite,a,s)},h=function(t,n){o.animating&&(f(t),u-=n,0>=u&&(o.frameIndex++,o.frameIndex===r.length&&(o.frameIndex=0,o.emit("animated",o)),u=r[o.frameIndex].time))};o.render=f,o.animate=h};return t.inherit(e,n),e}(t,n),i=function(t,n,e,i){this.name=t,this.type=n,this.dependencies=e,this.fn=i},o=function(t){var n,e,i,o,r;const c=function(){o(n[e],function(){e++,i>e?c():t.isFunction(r)&&r()})},a=function(a,s,u){Array.isArray(a)&&a.length&&t.isFunction(s)&&(n=a,e=0,i=a.length,o=s,r=u,c())};return a}(t),r=function(){const t=function(){this.context.clearRect(0,0,this.element.width,this.element.height)},n=function(){return this.element},e=function(){return this.context},i=function(t){var n=this.context.getImageData(0,0,this.element.width,this.element.height);t.getContext().putImageData(n,0,0,0,0,this.element.width,this.element.height)},o=function(t,n){this.element=document.createElement("canvas"),t&&this.element.setAttribute("id",t),this.element.setAttribute("width",n.width),this.element.setAttribute("height",n.height),this.context=this.element.getContext("2d")};return o.prototype={clear:t,getElement:n,getContext:e,transferTo:i},o}(),c=function(){const t={ARROW_LEFT:37,ARROW_UP:38,ARROW_RIGHT:39,ARROW_DOWN:40,A:65,W:87,D:68,S:83,SPACE:32},n={left:"l",up:"u",right:"r",down:"d"},e=[t.ARROW_LEFT,t.ARROW_UP,t.ARROW_RIGHT,t.ARROW_DOWN,t.A,t.W,t.D,t.S];return{keys:t,directions:n,directionKeys:e}}(),a=function(){this.lastTick=(new Date).getTime(),this.getElapsedTicks=function(){return this.frameSpacing||0},this.tick=function(t){const n=(new Date).getTime();this.frameSpacing=n-this.lastTick,this.lastTick=n,t&&(this.lastTick-=this.frameSpacing%t)}},s=function(t){const n={},e=function(e,i){const o={},r=function(){Object.keys(o).length===Object.keys(e).length&&t.isFunction(i)&&i(o)},c=function(){n[this.alt]=o[this.alt]=this,r()};for(var a in e)if(e.hasOwnProperty(a))if(n.hasOwnProperty(a))o[a]=n[a],r();else{const s=new Image;s.alt=a,s.onload=c,s.src=e[a]}};return{loadImages:e}}(t),u=function(t){var n,e=t.getElement();this.clearInput=function(){n={leftMouseClick:0,rightMouseClick:0,pressedKeys:[]}},this.clearInput(),this.checkForInput=function(){e.onmousedown=function(t){0===t.button?n.leftMouseClick=1:n.rightMouseClick.leftMouseClick=1},e.onmouseup=function(){n.leftMouseClick=n.rightMouseClick=0},document.onkeydown=function(t){const e=t.keyCode||t.which;-1===n.pressedKeys.indexOf(e)&&n.pressedKeys.push(e)},document.onkeyup=function(t){const e=t.keyCode||t.which,i=n.pressedKeys.indexOf(e);i>-1&&n.pressedKeys.splice(i,1)}},this.getInput=function(){return n}},f=function(t,n){var e=function(){this.loaded=!1};return t.inherit(e,n),e}(t,n),h=function(t,n){if(!t)throw"No game canvas found.";if(!n)throw"No buffer canvas found.";const e=n.getContext();this.getContext=function(){return e},this.render=function(e){n.clear(),e(),n.transferTo(t)}},l=function(t,n){var e=t,i=n.width,o=n.height,r=n.margin||0,c=n.sprites;this.getOffset=function(t){for(var n=0;n<c.length;n++){const e=c[n];if(e.name===t)return{x:e.x*i+r,y:e.y*o+r,width:i-2*r,height:o-2*r,rotate:e.rotate}}return null},this.getImage=function(){return e},this.size={width:i,height:o}};var d=function(t){return function(){this.create=function(n,e){const i=new t;var o,r=e;return{run:function(){o?o-=i.getElapsedTicks():o=r,0>=o&&(o=0,n.apply(null,arguments)),i.tick()},setInterval:function(t){r=t}}}}}(a);const m=function(t){return function(n){const e=function(t){var e=n.animations.map(function(t){return t.id}).indexOf(t.id);if(0>e)throw"Could not found animation "+t;n.animations.splice(e,1)};this.create=function(n,e,i,o){return new t(n,e,i,o)},this.animateOnce=function(t){n.animations.push(t.on("animated",function(t){t.animating=!1}))},this.animate=function(t){n.animations.push(t)},this.stop=e}}(e),g=function(t){return function(n){const e=function(e,i,o,r){if(!i)throw"Watch argument mods1 can't be null";if(!o)throw"Watch argument mods2 can't be null";if(!t.isFunction(r))throw"Watch argument fn must be a function";Array.isArray(i)||(i=[i]),Array.isArray(o)||(o=[o]),n.collisionWatchs[e]={modules1:i,modules2:o,callback:r}};this.watch=e}}(t),p=function(){return function(t){this.getConfig=function(){return t.config}}}();var y=function(t){return function(){this.loadImages=t.loadImages}}(s);const w=function(t){return function(n){this.pressedKeys=function(){var e=n.inputManager.getInput(),i={allKeys:e.pressedKeys};return i.directionKeys=i.allKeys.filter(function(n){return t.directionKeys.indexOf(n)>-1}),i}}}(c),x=(function(t){return t.keys}(c),function(t,n){const e=function(e){var i=function(t){var n=e.getContainerInstance(t);if(!n)throw"Could not find module '"&t&"'";return n};this.load=function(o,r){Array.isArray(o)||(o=[o]),o.forEach(function(o){var r="string"==typeof o?new(i(o)):o;"string"==typeof o&&(r.type=o),t.inherit(r,n),e.moduleManager.register(r)}),e.moduleManager.loadAll(function(){t.isFunction(r)&&r()})},this.unload=function(t){Array.isArray(t)||(t=[t]),t.forEach(function(t){e.moduleManager.unregister(t)})},this.create=function(t){var n=i(t),e=Array.prototype.slice.call(arguments,1);e.unshift(null),n=Function.prototype.bind.apply(n,e);var o=new n;return o.type=t,o}};return e}(t,f)),v=function(){return function(){this.getCenterPoint=function(t,n){return{x:t.x+n.width/2,y:t.y+n.height/2}},this.fromCenterPoint=function(t,n){return{x:t.x-n.width/2,y:t.y-n.height/2}}}}(),C=function(t){var n=this;n.getContext=function(){return t.renderer.getContext()},n.renderCircle=function(t,e,i){const o=n.getContext();o.beginPath(),o.fillStyle=i,o.arc(t.x,t.y,e,0,2*Math.PI,!1),o.fill(),o.closePath()},n.fillBG=function(t){const e=n.getContext();e.beginPath(),e.fillStyle=t,e.rect(0,0,e.canvas.width,e.canvas.height),e.fill(),e.closePath()};const e=function(t,e,i,o,r){const c=n.getContext();r=r||0;var a=r*Math.PI/180;c.translate(e.x,e.y),c.rotate(a),c.drawImage(t,i.x,i.y,i.width,i.height,o.width/2*-1,o.height/2*-1,o.width,o.height),c.rotate(-1*a),c.translate(-1*e.x,-1*e.y)};n.renderSprite=function(n,i,o,r,c){const a=t.getContainerInstance("$pos");o=o||{x:0,y:0};const s=n.getOffset(i);r=r||{height:s.height,width:s.width};const u=c?o:a.getCenterPoint(o,r);e(n.getImage(),u,s,r,(s.rotate||0)+(o.rotate||0))},n.renderText=function(t,e){const i=n.getContext();e.font&&(i.font=e.font),e.color&&(i.fillStyle=e.color),e.align&&(i.textAlign=e.align);var o;e.maxWidth&&(o=e.maxWidth),i.fillText(t,e.pos.x,e.pos.y,o)}},k=function(t){return function(){this.create=function(n,e){return new t(n,e)}}}(l),A=function(){return function(t){this.changeTo=function(n){t.setState(n)}}}(),b=function(t){return function(){const n=new t;this.create=function(t,e){return n.create(t,e)}}}(d),I=function(t){const n=[],e=function(t){n.push(t)},i=function(t){n.splice(n.indexOf(t),1),t.loaded=!1},o=function(t){n.length=0},r=function(e){t(n,function(t,n){t.loaded?n():t.load(function(){t.loaded=!0,n()})},e)},c=function(){n.forEach(function(t){t.loaded&&(t.update(),t.render())})},a=function(t){return n.filter(function(n){return n.type===t})},s=function(){};return s.prototype={register:e,unregister:i,clear:o,loadAll:r,renderAll:c,getByType:a},s}(o),E=function(t,n){const e=new t;var i,o,r;const c=function(t,e){if(i=parseFloat(t),!n.isFunction(e))throw"GameLoop parameter must be a function.";o=e},a=function(){const t=1e3/i;r&&window.requestAnimationFrame(a);const n=e.getElapsedTicks();n>t&&o(n),e.tick(t)},s=function(){r=!0,e.tick(),a()},u=function(){r=!1};return c.prototype={start:s,stop:u},c}(a,t),O=function(t,n,e,i,o,r,c,a,s,u,f,h,l,d,m,g,p,y,w){const x=function(x,v,C){var k=this;const b={size:{width:500,height:500},fps:50,canvasId:"game-canvas-"+(new Date).getTime()},I=x,E=w.extend(b,v),O={},T={},M={},W={},F={};C.forEach(function(t){w.extend(O,t.services),w.extend(T,t.states),w.extend(M,t.modules),w.extend(W,t.consts)});const R=function(t,n,e,i){if(!t)throw i+" must have a name";if(!n||!Array.isArray(n)&&!w.isFunction(n))throw i+" '"&t&"' implementation must be a function or array containing a function.";const o=[];var r=n;if(Array.isArray(n)){for(;n.length&&!w.isFunction(n[0]);)o.push(n.shift());if(!n.length||!w.isFunction(n[0]))throw"Last parameter must be a function at "+t;r=n[0]}if(e[t])throw i+" '"&t&"' exists.";e[t]=new d(t,i,o,r)},S=function(t,n){R(t,n,O,"Service")},P=function(t,n){R(t,n,T,"State")},$=function(t,n){R(t,n,M,"Module")},D=function(t,n){if(!t)throw"Constant must have a name";if(W[t])throw" '"&t&"' exists.";W[t]=n};var K;const _=function(t,n){n||(K=t);const e=[];switch(t.dependencies.forEach(function(n){if(!F[n]){var i=O[n]||T[n]||M[n];if(!i)throw"Could not find dependency '"&n&"' at '"&t.name&"'.";if(i===K)throw"Circular dependency found: '"&K.name&"' -> '"&n&"'";_(i,!0)}e.push(F[n])}),t.type){case"Service":e.unshift(null),F[t.name]=new(Function.prototype.bind.apply(t.fn,e));break;case"State":case"Module":F[t.name]=t.fn.apply(null,e)}},j=function(){w.extend(F,W),F.$game=new m(k),F.$module=new g(k),F.$renderer=new p(k),F.$imageLoader=new s,F.$sprite=new a,F.$input=new i(k),F.$animation=new o(k),F.$collision=new c(k),F.$state=new A(k),F.$timedFunction=new y,F.$pos=new r,F.$keys=t.keys,w.allValues(O).forEach(_),w.allValues(T).forEach(_),w.allValues(M).forEach(_)};var z,N;const V=function(){z=new l(E.canvasId,E.size),N=new l("buffer-canvas-"+(new Date).getTime(),E.size);var t=document.querySelector("[gmf-app='"+I+"']");if(!t)throw"Could not find element to bootstrap game.";t.parentNode.replaceChild(z.getElement(),t)},L=new n;var B;const G=function(t){if(!t)throw"Invalid null argument 'data'.";var n=t;if("string"==typeof t&&(n=T[t]),!n)throw"Could not find state "+t;L.clear(),k.animations=[],k.collisionWatchs={},B=new F[n.name]};var q;k.animations=[];const H=new f,U=function(t){k.animations=k.animations.filter(function(t){return t.animating}),k.animations.forEach(function(n){n.animate(t,H.getElapsedTicks())})},J=function(t){return F[t]};k.collisionWatchs={};const Q=function(){w.allValues(k.collisionWatchs).forEach(function(t){const n=[],e=[];t.modules1.forEach(function(t){"string"==typeof t?w.pushMany(n,L.getByType(t)):n.push(t)}),t.modules2.forEach(function(t){"string"==typeof t?w.pushMany(e,L.getByType(t)):e.push(t)}),n.forEach(function(n){e.forEach(function(e){n.loaded&&e.loaded&&w.boxCollision(w.box(n),w.box(e))&&t.callback(n,e)})})})};var X=!1;const Y=function(){k.renderer=new u(z,N),k.inputManager=new e(z),k.inputManager.checkForInput(),H.tick(),q=new h(E.fps,function(t){const n=function(){B.update(function(){k.renderer.render(function(){Q(),L.renderAll(),H.tick(),U(J("$renderer"))})})};B.loaded?X||n():(X=B.loaded=!0,B.load(function(){X=!1}))}),q.start()},Z=function(){j(),V(),G(E.initialState||w.allValues(T)[0]),Y()};k.name=I,k.config=E,k.services=O,k.states=T,k.modules=M,k.consts=W,k.service=S,k.state=P,k.module=$,k["const"]=D,k.start=Z,k.getContainerInstance=J,k.moduleManager=L,k.setState=G};return x}(c,I,u,w,m,v,g,k,y,h,a,E,r,i,p,x,C,b,t),T=function(t){const n={},e=function(e,i,o){if(i===o===void 0){const r=n[e];if(!r)throw"Could not find game import '"+e+"'";return r}return n[e]=new t(e,i,o)};return{game:e}}(O);return T}();
+const gamify = (function(){
+const Utils = (function () {
+    const _allValues = function (obj) {
+        const vals = [];
+        for (var key in obj)
+            vals.push(obj[key]);
+        return vals;
+    };
+    const _isFunction = function (obj) {
+        return typeof obj === "function";
+    };
+    const _extend = function (target) {
+        const length = arguments.length;
+        if (length < 2 || !target) return target;
+        const transferProps = function(source, dest, propName) {
+            Object.defineProperty(dest, propName,
+                Object.getOwnPropertyDescriptor(source, propName));
+        };
+        for (var i = 1; i < length; i++) {
+            var source = arguments[i];
+            var props = Object.getOwnPropertyNames(source);
+            for (var x = 0; x < props.length; x++)
+                transferProps(source, target, props[x]);
+        }
+        return target;
+    };
+    const _inherit = function (SubC, SuperC) {
+        var subProto = Object.create(SuperC.prototype);
+        _extend(subProto || {}, SubC.prototype || {});
+        SubC.prototype = subProto;
+    };
+    const _pushMany = function(destArr, sourceArr){
+        sourceArr.forEach(function(item){
+            destArr.push(item);
+        });
+    };
+    const _box = function(mod){
+      return {
+          x: mod.pos.x,
+          y: mod.pos.y,
+          w: mod.size.width,
+          h: mod.size.height
+      };
+    };
+    const _boxCollision = function(box1, box2){
+      return box1.x < box2.x + box2.w &&
+              box1.x + box1.w > box2.x &&
+              box1.y < box2.y + box2.h &&
+              box1.y + box1.h > box2.y;
+    };
+    return {
+        extend: _extend,
+        isFunction: _isFunction,
+        allValues: _allValues,
+        inherit: _inherit,
+        pushMany: _pushMany,
+        box: _box,
+        boxCollision: _boxCollision
+    };
+})();
+const EventEmitter = (function(_){
+    const events = {};
+    const oEventEmitter = function(){};
+    
+    oEventEmitter.prototype.on = function(event, fn){
+        if (!event)
+            throw "Event name can't be null";
+        if (!_.isFunction(fn))
+            throw "Invalid event function";
+        if (!events[event])
+            events[event] = [];
+        events[event].push(fn);
+        return this;
+    };
+    oEventEmitter.prototype.emit = function(event){
+        if (!event)
+            throw "Event name can't be null";
+        var args = Array.prototype.slice.call(arguments, 1);
+        var fns = events[event];
+        if (fns && fns.length)
+            fns.forEach(function(fn){
+                fn.apply(null, args);
+            });   
+    };
+    return oEventEmitter;
+})(Utils);
+const Animation = (function (_, EventEmitter) {
+    const oAnimation = function(frames, spriteSheet, pos, size){
+        const animObj = this;
+        animObj.id = "anim-" + frames.length + "-" + new Date().getTime();
+        animObj.animating = true;
+        animObj.frameIndex = 0;
+        
+        const _frames = frames;
+        const _sprideSheet = spriteSheet;
+        const _pos = pos;
+        const _size = size;
+        
+        var _frameDuration = frames[0].time;
+        var _animated;
+        
+        const _render = function($renderer){
+            $renderer.renderSprite(_sprideSheet,
+                                   _frames[animObj.frameIndex].sprite,
+                                   _pos,
+                                   _size);
+        };
+        
+        const _animate = function (renderer, elapsedTime) {
+            if (!animObj.animating) return;
+            _render(renderer);
+            _frameDuration -= elapsedTime;
+            if (_frameDuration <= 0) {
+                animObj.frameIndex++;
+                if (animObj.frameIndex === _frames.length){
+                    animObj.frameIndex = 0;
+                    animObj.emit("animated", animObj);
+                }
+                _frameDuration = _frames[animObj.frameIndex].time;
+            }
+        };
+        
+        animObj.render = _render;
+        animObj.animate = _animate;
+    };
+    _.inherit(oAnimation, EventEmitter);
+    return oAnimation;
+})(Utils, EventEmitter);
+const AssignmentObject = function (name, type, dependencies, fn) {
+    this.name = name;
+    this.type = type;
+    this.dependencies = dependencies;
+    this.fn = fn;
+};
+const AsyncLoop = (function (_) {
+    var _arr, _current, _last, _action, _callback;
+    const _execute = function () {
+        _action(_arr[_current], function () {
+            _current++;
+            if (_current < _last)
+                _execute();
+            else if (_.isFunction(_callback))
+                _callback();
+        });
+    };
+    const _asyncLoop = function (array, action, cb) {
+        if (!Array.isArray(array) || !array.length) return;
+        if (!_.isFunction(action)) return;
+        _arr = array;
+        _current = 0;
+        _last = array.length;
+        _action = action;
+        _callback = cb;
+        _execute();
+    };
+    return _asyncLoop;
+})(Utils);
+const Canvas = (function () {
+    const _clear = function () {
+        this.context.clearRect(0, 0, this.element.width, this.element.height);
+    };
+    const _getElement = function () {
+        return this.element;
+    };
+    const _getContext = function () {
+        return this.context;
+    };
+
+    const _transferTo = function (canvasTo) {
+        var _imgData = this.context.getImageData(0, 0, this.element.width, this.element.height);
+        canvasTo.getContext().putImageData(_imgData, 0, 0, 0, 0, this.element.width, this.element.height);
+    };
+
+    const _canvas = function (id, size) {
+        this.element = document.createElement("canvas");
+        if (id)
+            this.element.setAttribute("id", id);
+        this.element.setAttribute("width", size.width);
+        this.element.setAttribute("height", size.height);
+        this.context = this.element.getContext("2d");
+    };
+    _canvas.prototype = {
+        clear: _clear,
+        getElement: _getElement,
+        getContext: _getContext,
+        transferTo: _transferTo
+    };
+    return _canvas;
+})();
+const Constants = (function () {
+    const _keys = {
+        ARROW_LEFT: 37,
+        ARROW_UP: 38,
+        ARROW_RIGHT: 39,
+        ARROW_DOWN: 40,
+        A: 65,
+        W: 87,
+        D: 68,
+        S: 83,
+        SPACE: 32
+    };
+    const _directions = {
+        left: "l",
+        up: "u",
+        right: "r",
+        down: "d"
+    };
+    const _directionKeys = [
+        _keys.ARROW_LEFT,
+        _keys.ARROW_UP,
+        _keys.ARROW_RIGHT,
+        _keys.ARROW_DOWN,
+        _keys.A,
+        _keys.W,
+        _keys.D,
+        _keys.S
+    ];
+    return {
+        keys: _keys,
+        directions: _directions,
+        directionKeys: _directionKeys
+    };
+})();
+const FrameTimer = function () {
+    this.lastTick = new Date().getTime();
+    this.getElapsedTicks = function () {
+        return this.frameSpacing || 0;
+    };
+    this.tick = function (expectedInterval) {
+        const _currentTick = new Date().getTime();
+        this.frameSpacing = _currentTick - this.lastTick;
+        this.lastTick = _currentTick;
+        if (expectedInterval)
+            this.lastTick -= this.frameSpacing % expectedInterval;
+    };
+};
+const ImageLoader = (function (_) {
+    const _images = {};
+    const _loadImages = function (images, cb) {
+        const _results = {};
+        const _checkFinish = function () {
+            if (Object.keys(_results).length === Object.keys(images).length && _.isFunction(cb))
+                cb(_results);
+        };
+        const imgLoaded = function () {
+            _images[this.alt] = _results[this.alt] = this;
+            _checkFinish();
+        };
+        for (var _key in images) {
+            if (!images.hasOwnProperty(_key))
+                continue;
+            if (_images.hasOwnProperty(_key)) {
+                _results[_key] = _images[_key];
+                _checkFinish();
+            } else {
+                const _img = new Image();
+                _img.alt = _key;
+                _img.onload = imgLoaded;
+                _img.src = images[_key];
+            }
+        }
+    };
+
+    return {
+        loadImages: _loadImages
+    };
+})(Utils);
+const InputManager = function (canvas) {
+    var _canvas = canvas.getElement();
+    var _input;
+    this.clearInput = function () {
+        _input = {
+            leftMouseClick: 0,
+            rightMouseClick: 0,
+            pressedKeys: []
+        };
+    };
+    this.clearInput();
+    this.checkForInput = function () {
+        _canvas.onmousedown = function (e) {
+            if (e.button === 0)
+                _input.leftMouseClick = 1;
+            else
+                _input.rightMouseClick.leftMouseClick = 1;
+        };
+        _canvas.onmouseup = function () {
+            _input.leftMouseClick = _input.rightMouseClick = 0;
+        };
+        document.onkeydown = function (e) {
+            const _key = e.keyCode || e.which;
+            if (_input.pressedKeys.indexOf(_key) === -1)
+                _input.pressedKeys.push(_key);
+        };
+        document.onkeyup = function (e) {
+            const _key = e.keyCode || e.which;
+            const _i = _input.pressedKeys.indexOf(_key);
+            if (_i > -1)
+                _input.pressedKeys.splice(_i, 1);
+        };
+    };
+    this.getInput = function () {
+        return _input;
+    };
+};
+const ModuleBase = (function(_, EventEmitter){
+    var oModuleBase = function(){
+        this.loaded = false;
+    };
+    _.inherit(oModuleBase, EventEmitter);
+    return oModuleBase;
+})(Utils, EventEmitter);
+const Renderer = function (canvasGame, canvasBuffer) {
+    if (!canvasGame)
+        throw "No game canvas found.";
+    if (!canvasBuffer)
+        throw "No buffer canvas found.";
+    const _ctx = canvasBuffer.getContext();
+    this.getContext = function () {
+        return _ctx;
+    };
+    this.render = function (action) {
+        canvasBuffer.clear();
+        action();
+        canvasBuffer.transferTo(canvasGame);
+    };
+};
+const SpriteSheet = function (image, data) {
+    var _image = image,
+        _width = data.width,
+        _height = data.height,
+        _margin = data.margin || 0,
+        _sprites = data.sprites;
+    this.getOffset = function (name) {
+        for (var _i = 0; _i < _sprites.length; _i++) {
+            const _sprite = _sprites[_i];
+            if (_sprite.name === name)
+                return {
+                    x: _sprite.x * _width + _margin,
+                    y: _sprite.y * _height + _margin,
+                    width: _width - 2 * _margin,
+                    height: _height - 2 * _margin,
+                    rotate: _sprite.rotate
+                };
+        }
+        return null;
+    };
+    this.getImage = function () {
+        return _image;
+    };
+    this.size = {
+        width: _width,
+        height: _height
+    };
+};
+var TimedFunction = (function (FrameTimer) {
+    return function () {
+        this.create = function (action, interval) {
+            const _timer = new FrameTimer();
+            var _duration, _interval = interval;
+            return {
+                run: function () {
+                    if (_duration) _duration -= _timer.getElapsedTicks();
+                    else _duration = _interval;
+
+                    if (_duration <= 0) {
+                        _duration = 0;
+                        action.apply(null, arguments);
+                    }
+                    _timer.tick();
+                },
+                setInterval: function(interval){
+                    _interval = interval;
+                }
+            };
+        };
+    };
+})(FrameTimer);
+const AnimationInjection = (function (Animation) {
+    return function (game) {
+        const _stop = function (anim) {
+            var i = game.animations.map(function(a){
+                return a.id;
+            }).indexOf(anim.id);
+            if (i < 0)
+                throw "Could not found animation " + anim;
+            game.animations.splice(i, 1);
+        };
+        this.create = function (frames, spriteSheet, pos, size) {
+            return new Animation(frames, spriteSheet, pos, size);
+        };
+        this.animateOnce = function (anim) {
+            game.animations.push(anim.on("animated", function(a){
+                a.animating = false;
+            }));
+        };
+        this.animate = function (anim) {
+            game.animations.push(anim);
+        };
+        this.stop = _stop;
+    };
+})(Animation);
+const CollisionInjection = (function (_) {
+    return function (game) {
+        const _watch = function (name, mods1, mods2, fn) {
+            if (!mods1)
+                throw "Watch argument mods1 can't be null";
+            if (!mods2)
+                throw "Watch argument mods2 can't be null";
+            if (!_.isFunction(fn))
+                throw "Watch argument fn must be a function";
+            if (!Array.isArray(mods1))
+                mods1 = [mods1];
+            if (!Array.isArray(mods2))
+                mods2 = [mods2];
+            game.collisionWatchs[name] = {
+               modules1: mods1, 
+               modules2: mods2,
+               callback: fn
+            };
+        };
+        this.watch = _watch;
+    };
+})(Utils);
+const GameInjection = (function () {
+    return function (game) {
+        this.getConfig = function () {
+            return game.config;
+        };
+    };
+})();
+var ImageLoaderInjection = (function(imageLoader){
+    return function(){
+        this.loadImages = imageLoader.loadImages;
+    };
+})(ImageLoader);
+const InputInjection = (function (consts) {
+    return function (game) {
+        this.pressedKeys = function () {
+            var input = game.inputManager.getInput();
+            var obj = {
+                allKeys: input.pressedKeys
+            };
+            obj.directionKeys = obj.allKeys.filter(function(k){
+               return consts.directionKeys.indexOf(k) > -1;
+            });
+            return obj;
+        };
+    };
+})(Constants);
+const KeysInjection = (function(consts){
+    return consts.keys;
+})(Constants);
+const ModuleInjection = (function (_, ModuleBase) {
+    const oModuleInjection = function (game) {
+        var _getModuleSafe = function (name) {
+            var fn = game.getContainerInstance(name);
+            if (!fn)
+                throw "Could not find module '" & name & "'";
+            return fn;
+        };
+        this.load = function (modules, cb) {
+            if (!Array.isArray(modules))
+                modules = [modules];
+            modules.forEach(function (m) {
+                var mod = typeof m === "string" ?
+                    new (_getModuleSafe(m))() :
+                    m;
+                if (typeof m === "string")
+                    mod.type = m;
+                _.inherit(mod, ModuleBase);
+                game.moduleManager.register(mod);
+            });
+            game.moduleManager.loadAll(function(){
+                if (_.isFunction(cb)) cb();
+            });
+        };  
+        this.unload = function (modules) {
+            if (!Array.isArray(modules))
+                modules = [modules];
+            modules.forEach(function (m) {
+                game.moduleManager.unregister(m);
+            });
+        };
+        this.create = function (name) {
+            var Fn = _getModuleSafe(name);
+            //all args but name
+            var args = Array.prototype.slice.call(arguments, 1);
+            //adds null to arg list to use bind
+            args.unshift(null);
+            Fn = Function.prototype.bind.apply(Fn, args);
+            var obj = new (Fn)();
+            obj.type = name;
+            return obj;
+        };
+    };
+    return oModuleInjection;
+})(Utils, ModuleBase);
+const PosInjection = (function () {
+    return function () {
+        this.getCenterPoint = function(pos, size){
+            return {
+                x: pos.x + size.width / 2,
+                y: pos.y + size.height / 2  
+            };  
+        };
+        this.fromCenterPoint = function(pos, size){
+            return {
+                x: pos.x - size.width / 2,
+                y: pos.y - size.height / 2  
+            };  
+        };
+    };
+})();
+const RendererInjection = function (game) {
+    var rendererObj = this;
+    rendererObj.getContext = function () {
+        return game.renderer.getContext();
+    };
+    rendererObj.renderCircle = function (destPos, radius, color) {
+        const _ctx = rendererObj.getContext();
+        _ctx.beginPath();
+        _ctx.fillStyle = color;
+        _ctx.arc(destPos.x, destPos.y, radius, 0, 2 * Math.PI, false);
+        _ctx.fill();
+        _ctx.closePath();
+    };
+    rendererObj.renderLine = function (from, to, lineWidth, color) {
+        const _ctx = rendererObj.getContext();
+        _ctx.beginPath();
+        if (color)
+            _ctx.strokeStyle = color;
+        if (lineWidth)
+            _ctx.lineWidth = lineWidth;
+        _ctx.moveTo(from.x, from.y);
+        _ctx.lineTo(to.x, to.y);
+        _ctx.stroke();
+        _ctx.closePath();
+    };
+
+    rendererObj.fillBG = function (color) {
+        const _ctx = rendererObj.getContext();
+        _ctx.beginPath();
+        _ctx.fillStyle = color;
+        _ctx.rect(0, 0, _ctx.canvas.width, _ctx.canvas.height);
+        _ctx.fill();
+        _ctx.closePath();
+    };
+
+    const _drawImageFromCenterPoint = function (img, centerPoint, offset, size, deg) {
+        const _ctx = rendererObj.getContext();
+        deg = deg || 0;
+        var rad = deg * Math.PI / 180;
+        _ctx.translate(centerPoint.x, centerPoint.y);
+        _ctx.rotate(rad);
+        _ctx.drawImage(img,
+            offset.x,
+            offset.y,
+            offset.width,
+            offset.height,
+            size.width / 2 * -1,
+            size.height / 2 * -1,
+            size.width,
+            size.height);
+        _ctx.rotate(rad * -1);
+        _ctx.translate(centerPoint.x * -1, centerPoint.y * -1);
+    };
+
+    const _getCenterPoint = function (pos, size) {
+        return {
+            x: pos.x + size.width / 2,
+            y: pos.y + size.height / 2
+        };
+    };
+
+    rendererObj.renderSprite = function (spriteSheet, spriteName, destPos, destSize, fromCenter) {
+        const $pos = game.getContainerInstance("$pos");
+        destPos = destPos || {
+            x: 0,
+            y: 0
+        };
+        const _offset = spriteSheet.getOffset(spriteName);
+        destSize = destSize || {
+            height: _offset.height,
+            width: _offset.width
+        };
+        const centerPoint = fromCenter ?
+            destPos : $pos.getCenterPoint(destPos, destSize);
+        _drawImageFromCenterPoint(spriteSheet.getImage(), centerPoint,
+            _offset, destSize,
+            (_offset.rotate || 0) + (destPos.rotate || 0));
+    };
+
+    rendererObj.renderText = function (text, opt) {
+        const _ctx = rendererObj.getContext();
+        if (opt.font)
+            _ctx.font = opt.font;
+        if (opt.color)
+            _ctx.fillStyle = opt.color;
+        if (opt.align)
+            _ctx.textAlign = opt.align;
+        var maxWidth;
+        if (opt.maxWidth)
+            maxWidth = opt.maxWidth;
+        _ctx.fillText(text, opt.pos.x, opt.pos.y, maxWidth);
+    };
+};
+const SpriteInjection = (function (SpriteSheet) {
+    return function () {
+        this.create = function (image, data) {
+            return new SpriteSheet(image, data);
+        };
+    };
+})(SpriteSheet);
+const StateInjection = (function () {
+    return function (game) {
+        this.changeTo = function (state) {
+            game.setState(state);
+        };
+    };
+})();
+const TimedFunctionInjection = (function (TimedFunction) {
+    return function () {
+        const timedFunction = new TimedFunction();
+        this.create = function (action, interval) {
+            return timedFunction.create(action, interval);
+        };
+    };
+})(TimedFunction);
+const ModuleManager = (function (asyncLoop) {
+    const _modules = [];
+    const _register = function (module) {
+        _modules.push(module);
+    };
+    const _unregister = function (module) {
+        _modules.splice(_modules.indexOf(module), 1);
+        module.loaded = false;
+    };
+    const _clear = function (module) {
+        _modules.length = 0;
+    };
+    const _loadAll = function (cb) {
+        asyncLoop(_modules, function (module, next) {
+            if (!module.loaded)
+                module.load(function(){
+                    module.loaded = true;
+                    next();
+                });
+            else next();
+        }, cb);
+    };
+    const _renderAll = function () {
+        // console.log(_modules.filter(function(m){
+        //     return m.type === "playerModule";
+        // }));
+        _modules.forEach(function (m) {
+            if (m.loaded){
+                m.update();
+                m.render();
+            }
+        });
+    };
+    const _getByType = function (type) {
+        return _modules.filter(function (m) {
+            return m.type === type;
+        });
+    };
+    const _moduleManager = function () { };
+    _moduleManager.prototype = {
+        register: _register,
+        unregister: _unregister,
+        clear: _clear,
+        loadAll: _loadAll,
+        renderAll: _renderAll,
+        getByType: _getByType
+    };
+    return _moduleManager;
+})(AsyncLoop);
+const GameLoop = (function (FrameTimer, _) {
+    const _timer = new FrameTimer();
+    var _fps, _action, _running;
+
+    const oGameLoop = function (fps, action) {
+        _fps = parseFloat(fps);
+        if (_.isFunction(action))
+            _action = action;
+        else throw "GameLoop parameter must be a function.";
+    };
+
+    const _mainLoop = function () {
+        const interval = 1000 / _fps;
+        if (_running)
+            window.requestAnimationFrame(_mainLoop);
+        const elapsed = _timer.getElapsedTicks();
+        if (elapsed > interval)
+            _action(elapsed);
+        _timer.tick(interval);
+    };
+
+    const _start = function () {
+        _running = true;
+        _timer.tick();
+        _mainLoop();
+    };
+
+    const _stop = function () {
+        _running = false;
+    };
+
+    oGameLoop.prototype = {
+        start: _start,
+        stop: _stop
+    };
+
+    return oGameLoop;
+}) (FrameTimer, Utils);
+const Game = (function (consts,
+    ModuleManager,
+    InputManager,
+    InputInjection,
+    AnimationInjection,
+    PosInjection,
+    CollisionInjection,
+    SpriteInjection,
+    ImageLoaderInjection,
+    Renderer,
+    FrameTimer,
+    GameLoop,
+    Canvas,
+    AssignmentObject,
+    GameInjection,
+    ModuleInjection,
+    RendererInjection,
+    TimedFunctionInjection,
+    _) {
+    const oGame = function (name, config, inheritGames) {
+        var gameObj = this;
+        const _defaultConfigs = {
+            size: {
+                width: 500,
+                height: 500
+            },
+            fps: 50,
+            canvasId: "game-canvas-" + new Date().getTime()
+        };
+        const _name = name,
+            _config = _.extend(_defaultConfigs, config),
+            _services = {},
+            _states = {},
+            _modules = {},
+            _consts = {},
+            _container = {};
+        inheritGames.forEach(function (game) {
+            _.extend(_services, game.services);
+            _.extend(_states, game.states);
+            _.extend(_modules, game.modules);
+            _.extend(_consts, game.consts);
+        });
+
+        const _getAssignment = function (name, data, obj, context) {
+            if (!name) throw context + " must have a name";
+            if (!data || (!Array.isArray(data) && !_.isFunction(data)))
+                throw context + " '" & name & "' implementation must be a function or array containing a function.";
+            const injections = [];
+            var fn = data;
+            if (Array.isArray(data)) {
+                while (data.length && !_.isFunction(data[0]))
+                    injections.push(data.shift());
+                if (!data.length || !_.isFunction(data[0]))
+                    throw "Last parameter must be a function at " + name;
+                fn = data[0];
+            }
+            if (obj[name])
+                throw context + " '" & name & "' exists.";
+            obj[name] = new AssignmentObject(name, context, injections, fn);
+        };
+
+        const _serviceFn = function (name, data) {
+            _getAssignment(name, data, _services, "Service");
+        };
+
+        const _stateFn = function (name, data) {
+            _getAssignment(name, data, _states, "State");
+        };
+
+        const _moduleFn = function (name, data) {
+            _getAssignment(name, data, _modules, "Module");
+        };
+
+        const _constFn = function (name, data) {
+            if (!name) throw "Constant must have a name";
+            if (_consts[name])
+                throw " '" & name & "' exists.";
+            _consts[name] = data;
+        };
+
+        var _instantiating;
+        const _instantiate = function (assObj, subInstance) {
+            if (!subInstance)
+                _instantiating = assObj;
+            const deps = [];
+            assObj.dependencies.forEach(function (dep) {
+                if (!_container[dep]) {
+                    var depObj = _services[dep] || _states[dep] || _modules[dep];
+                    if (!depObj)
+                        throw "Could not find dependency '" & dep & "' at '" & assObj.name & "'.";
+                    if (depObj === _instantiating)
+                        throw "Circular dependency found: '" & _instantiating.name & "' -> '" & dep & "'";
+                    _instantiate(depObj, true);
+                }
+                deps.push(_container[dep]);
+            });
+            switch (assObj.type) {
+                case "Service":
+                    deps.unshift(null);
+                    _container[assObj.name] = new (Function.prototype.bind.apply(assObj.fn, deps))();
+                    break;
+                case "State":
+                case "Module":
+                    _container[assObj.name] = assObj.fn.apply(null, deps);
+                    break;
+            }
+        };
+
+        const _fillContainer = function () {
+            _.extend(_container, _consts);
+            _container.$game = new GameInjection(gameObj);
+            _container.$module = new ModuleInjection(gameObj);
+            _container.$renderer = new RendererInjection(gameObj);
+            _container.$imageLoader = new ImageLoaderInjection();
+            _container.$sprite = new SpriteInjection();
+            _container.$input = new InputInjection(gameObj);
+            _container.$animation = new AnimationInjection(gameObj);
+            _container.$collision = new CollisionInjection(gameObj);
+            _container.$state = new StateInjection(gameObj);
+            _container.$timedFunction = new TimedFunctionInjection();
+            _container.$pos = new PosInjection();
+            _container.$keys = consts.keys;
+            _.allValues(_services).forEach(_instantiate);
+            _.allValues(_states).forEach(_instantiate);
+            _.allValues(_modules).forEach(_instantiate);
+        };
+
+        var _canvasGame, _canvasBuffer;
+        const _setupCanvas = function () {
+            _canvasGame = new Canvas(_config.canvasId, _config.size);
+            _canvasBuffer = new Canvas("buffer-canvas-" + new Date().getTime(), _config.size);
+            var gameElement = document.querySelector("[gmf-app='" + _name + "']");
+            if (!gameElement)
+                throw "Could not find element to bootstrap game.";
+            gameElement.parentNode.replaceChild(_canvasGame.getElement(), gameElement);
+        };
+
+        const _moduleManager = new ModuleManager();
+        var _currentState;
+        const _setState = function (data) {
+            if (!data)
+                throw "Invalid null argument 'data'.";
+            var state = data;
+            if (typeof data === "string")
+                state = _states[data];
+            if (!state)
+                throw "Could not find state " + data;
+            if (gameObj.inputManager)
+                gameObj.inputManager.clearInput();
+            _moduleManager.clear();
+            gameObj.animations = [];
+            gameObj.collisionWatchs = {};
+            _currentState = new (_container[state.name])();
+        };
+
+        var gameLoop;
+        gameObj.animations = [];
+        const _timer = new FrameTimer();
+        const _updateAnimations = function (renderer) {
+            gameObj.animations = gameObj.animations.filter(function (anim) {
+                return anim.animating;
+            });
+            gameObj.animations.forEach(function (anim) {
+                anim.animate(renderer, _timer.getElapsedTicks());
+            });
+        };
+        const _getContainerInstance = function (k) {
+            return _container[k];
+        };
+
+        gameObj.collisionWatchs = {};
+        const _checkForCollisions = function () {
+            _.allValues(gameObj.collisionWatchs)
+                .forEach(function (watch) {
+                    const arrModules1 = [];
+                    const arrModules2 = [];
+                    watch.modules1.forEach(function (mod) {
+                        if (typeof mod === "string")
+                            _.pushMany(arrModules1, _moduleManager.getByType(mod));
+                        else arrModules1.push(mod);
+                    });
+                    watch.modules2.forEach(function (mod) {
+                        if (typeof mod === "string")
+                            _.pushMany(arrModules2, _moduleManager.getByType(mod));
+                        else arrModules2.push(mod);
+                    });
+                    arrModules1.forEach(function (mod1) {
+                        arrModules2.forEach(function (mod2) {
+                            if (mod1.loaded &&
+                                mod2.loaded &&
+                                _.boxCollision(_.box(mod1), _.box(mod2)))
+                                watch.callback(mod1, mod2);
+                        });
+                    });
+                });
+        };
+        var _stateLoading = false;
+        const _startLoop = function () {
+            gameObj.renderer = new Renderer(_canvasGame, _canvasBuffer);
+            gameObj.inputManager = new InputManager(_canvasGame);
+            gameObj.inputManager.checkForInput();
+            _timer.tick();
+            gameLoop = new GameLoop(_config.fps, function (elapsedTime) {
+                const _continue = function () {
+                    _currentState.update(function () {
+                        gameObj.renderer.render(function () {
+                            _checkForCollisions();
+                            _moduleManager.renderAll();
+                            _timer.tick();
+                            _updateAnimations(_getContainerInstance("$renderer"));
+                        });
+                    });
+                };
+                if (_currentState.loaded) {
+                    if (!_stateLoading)
+                        _continue();
+                } else {
+                    _stateLoading = _currentState.loaded = true;
+                    _currentState.load(function () {
+                        _stateLoading = false;
+                    });
+                }
+            });
+            gameLoop.start();
+        };
+
+        const _start = function () {
+            _fillContainer();
+            _setupCanvas();
+            _setState(_config.initialState || _.allValues(_states)[0]);
+            _startLoop();
+        };
+
+        gameObj.name = _name;
+        gameObj.config = _config;
+        gameObj.services = _services;
+        gameObj.states = _states;
+        gameObj.modules = _modules;
+        gameObj.consts = _consts;
+        gameObj.service = _serviceFn;
+        gameObj.state = _stateFn;
+        gameObj.module = _moduleFn;
+        gameObj.const = _constFn;
+        gameObj.start = _start;
+        gameObj.getContainerInstance = _getContainerInstance;
+        gameObj.moduleManager = _moduleManager;
+        gameObj.setState = _setState;
+    };
+    return oGame;
+})(Constants,
+    ModuleManager,
+    InputManager,
+    InputInjection,
+    AnimationInjection,
+    PosInjection,
+    CollisionInjection,
+    SpriteInjection,
+    ImageLoaderInjection,
+    Renderer,
+    FrameTimer,
+    GameLoop,
+    Canvas,
+    AssignmentObject,
+    GameInjection,
+    ModuleInjection,
+    RendererInjection,
+    TimedFunctionInjection,
+    Utils);
+const Gamify = (function (Game) {
+    const games = {};
+
+    const gameFn = function (name, config, modules) {
+        if (config === modules === undefined) {
+            const game = games[name];
+            if (!game)
+                throw "Could not find game import '" + name + "'";
+            return game;
+        }
+        return (games[name] = new Game(name, config, modules));
+    };
+
+    return {
+        game: gameFn
+    };
+}) (Game);
+    return Gamify;
+})();

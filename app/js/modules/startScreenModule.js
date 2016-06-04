@@ -1,6 +1,6 @@
 spaceship.module("startScreenModule", [
     "$sprite", "$renderer", "$imageLoader",
-    function ($sprite, $renderer, $imageLoader, $input, $keys, $state) {
+    function ($sprite, $renderer, $imageLoader) {
         return function () {
             var _wpSprite, _logoSprite;
             const _logoSize = {
@@ -37,17 +37,15 @@ spaceship.module("startScreenModule", [
                     x: 5,
                     y: 20    
                 }, _logoSize);
-                
-                var startInstructionsPos = {
-                    x: 300,
-                    y: 250
-                };
                 $renderer.renderText("Use arrows to move", {
                     maxWidth: 300,
                     font: "bold 30px Verdana",
                     align: "center",
                     color: "white",
-                    pos: startInstructionsPos
+                    pos: {
+                        x: 300,
+                        y: 250
+                    }
                 });
                 $renderer.renderText("Use space bar to shoot", {
                     maxWidth: 300,
@@ -55,18 +53,17 @@ spaceship.module("startScreenModule", [
                     align: "center",
                     color: "white",
                     pos: {
-                        x: startInstructionsPos.x,
-                        y: startInstructionsPos.y + 40
+                        x: 300,
+                        y: 290
                     }
                 });
-                $renderer.renderText("Press space bar to start", {
-                    maxWidth: 300,
-                    font: "bold 30px Verdana",
+                $renderer.renderText("Press space bar to select and start", {
+                    font: "bold 25px Verdana",
                     align: "center",
                     color: "white",
                     pos: {
-                        x: startInstructionsPos.x,
-                        y: startInstructionsPos.y + 160
+                        x: 300,
+                        y: 550
                     }
                 });
             };

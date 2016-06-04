@@ -54,15 +54,6 @@ spaceship.module("gameOverScreenModule", [
                         y: 410
                     }
                 });
-                $renderer.renderText("Press space bar to start a new game", {
-                    font: "bold 20px Verdana",
-                    align: "center",
-                    color: "white",
-                    pos: {
-                        x: 300,
-                        y: 550
-                    }
-                });
             };
         };
     }]);

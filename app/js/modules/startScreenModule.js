@@ -8,8 +8,8 @@ spaceship.module("startScreenModule", [
             };
             this.load = function (next) {
                 $imageLoader.loadImages({
-                    wallpaper: "/img/sprites/wallpaper.png",
-                    logo: "/img/sprites/logo.png"
+                    wallpaper: "img/sprites/wallpaper.png",
+                    logo: "img/sprites/logo.png"
                 }, function (images) {
                     _wpSprite = $sprite.create(images.wallpaper, {
                         height: images.wallpaper.height,

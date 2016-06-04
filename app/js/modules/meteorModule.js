@@ -27,7 +27,7 @@ spaceship.module("meteorModule", [
                     }, 500);
                 });
                 $imageLoader.loadImages({
-                    meteor: "/img/sprites/meteor.png"
+                    meteor: "img/sprites/meteor.png"
                 }, function (images) {
                     _spriteSheet = $sprite.create(images.meteor, {
                         height: images.meteor.height,

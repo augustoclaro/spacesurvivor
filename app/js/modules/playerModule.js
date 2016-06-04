@@ -14,7 +14,7 @@ spaceship.module("playerModule", [
                 _config = $game.getConfig();
             this.load = function (next) {
                 $imageLoader.loadImages({
-                    ship: "/img/sprites/ship.png"
+                    ship: "img/sprites/ship.png"
                 }, function (images) {
                     playerObj.size.height = images.ship.height / images.ship.width * playerObj.size.width;
                     _spriteSheet = $sprite.create(images.ship, {

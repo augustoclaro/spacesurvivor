@@ -8,7 +8,7 @@ spaceship.module("gameOverScreenModule", [
             };
             this.load = function (next) {
                 $imageLoader.loadImages({
-                    logo: "/img/sprites/logo.png"
+                    logo: "img/sprites/logo.png"
                 }, function (images) {
                     _logoSprite = $sprite.create(images.logo, {
                         height: images.logo.height,

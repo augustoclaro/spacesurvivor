@@ -10,7 +10,7 @@ spaceship.module("bulletModule", [
                 };
             this.load = function (next) {
                 $imageLoader.loadImages({
-                    bullet: "/img/sprites/bullet.png"
+                    bullet: "img/sprites/bullet.png"
                 }, function (images) {
                     _spriteSheet = $sprite.create(images.bullet, {
                         height: images.bullet.height,

@@ -8,7 +8,7 @@ spaceship.service("animationService", [
             };
             pos = $pos.fromCenterPoint(centerPoint, size);
             $imageLoader.loadImages({
-                explosion: "/img/sprites/explosion.png"
+                explosion: "img/sprites/explosion.png"
             }, function (images) {
                 var sprites = [];
                 var x, y;

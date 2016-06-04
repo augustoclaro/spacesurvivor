@@ -325,6 +325,7 @@ const Renderer = function (canvasGame, canvasBuffer) {
         throw "No game canvas found.";
     if (!canvasBuffer)
         throw "No buffer canvas found.";
+    this.canvasGame = canvasGame;
     const _ctx = canvasBuffer.getContext();
     const _layers = [];
     this.getContext = function (layer) {
@@ -343,15 +344,6 @@ const Renderer = function (canvasGame, canvasBuffer) {
             canvas.drawTo(canvasGame);
             canvasGame.getContext().restore();
         });
-        // canvasBuffer.clear();
-        // _layers.forEach(function(canvas){
-        //     canvas.clear();
-        // });
-        // action();
-        // _layers.forEach(function(canvas){
-        //     canvas.drawTo(canvasBuffer);
-        // });
-        // canvasBuffer.transferTo(canvasGame);
     };
 };
 const SpriteSheet = function (image, data) {
@@ -541,107 +533,116 @@ const PosInjection = (function () {
         };
     };
 })();
-const RendererInjection = function (game) {
+const RendererInjection = (function (_) {
+    return function (game) {
+        const ORenderer = function (layer) {
+            var rendererObj = this;
+            rendererObj.layer = layer || 0;
+            rendererObj.layers = {};
+            rendererObj.renderCircle = function (destPos, radius, color) {
+                const _ctx = rendererObj.getContext(rendererObj.layer);
+                _ctx.beginPath();
+                _ctx.fillStyle = color;
+                _ctx.arc(destPos.x, destPos.y, radius, 0, 2 * Math.PI, false);
+                _ctx.fill();
+                _ctx.closePath();
+            };
+            rendererObj.renderLine = function (from, to, lineWidth, color) {
+                const _ctx = rendererObj.getContext(rendererObj.layer);
+                _ctx.beginPath();
+                if (color)
+                    _ctx.strokeStyle = color;
+                if (lineWidth)
+                    _ctx.lineWidth = lineWidth;
+                _ctx.moveTo(from.x, from.y);
+                _ctx.lineTo(to.x, to.y);
+                _ctx.stroke();
+                _ctx.closePath();
+            };
 
-    const ORenderer = function () {
-        var rendererObj = this;
-        rendererObj.layer = 0;
-        rendererObj.layers = {};
-        rendererObj.renderCircle = function (destPos, radius, color) {
-            const _ctx = rendererObj.getContext(rendererObj.layer);
-            _ctx.beginPath();
-            _ctx.fillStyle = color;
-            _ctx.arc(destPos.x, destPos.y, radius, 0, 2 * Math.PI, false);
-            _ctx.fill();
-            _ctx.closePath();
-        };
-        rendererObj.renderLine = function (from, to, lineWidth, color) {
-            const _ctx = rendererObj.getContext(rendererObj.layer);
-            _ctx.beginPath();
-            if (color)
-                _ctx.strokeStyle = color;
-            if (lineWidth)
-                _ctx.lineWidth = lineWidth;
-            _ctx.moveTo(from.x, from.y);
-            _ctx.lineTo(to.x, to.y);
-            _ctx.stroke();
-            _ctx.closePath();
-        };
+            rendererObj.fillBG = function (color) {
+                const _ctx = rendererObj.getContext(rendererObj.layer);
+                _ctx.beginPath();
+                _ctx.fillStyle = color;
+                _ctx.rect(0, 0, _ctx.canvas.width, _ctx.canvas.height);
+                _ctx.fill();
+                _ctx.closePath();
+            };
 
-        rendererObj.fillBG = function (color) {
-            const _ctx = rendererObj.getContext(rendererObj.layer);
-            _ctx.beginPath();
-            _ctx.fillStyle = color;
-            _ctx.rect(0, 0, _ctx.canvas.width, _ctx.canvas.height);
-            _ctx.fill();
-            _ctx.closePath();
-        };
+            const _drawImageFromCenterPoint = function (img, centerPoint, offset, size, deg) {
+                const _ctx = rendererObj.getContext(rendererObj.layer);
+                deg = deg || 0;
+                var rad = deg * Math.PI / 180;
+                _ctx.translate(centerPoint.x, centerPoint.y);
+                _ctx.rotate(rad);
+                _ctx.drawImage(img,
+                    offset.x,
+                    offset.y,
+                    offset.width,
+                    offset.height,
+                    size.width / 2 * -1,
+                    size.height / 2 * -1,
+                    size.width,
+                    size.height);
+                _ctx.rotate(rad * -1);
+                _ctx.translate(centerPoint.x * -1, centerPoint.y * -1);
+            };
 
-        const _drawImageFromCenterPoint = function (img, centerPoint, offset, size, deg) {
-            const _ctx = rendererObj.getContext(rendererObj.layer);
-            deg = deg || 0;
-            var rad = deg * Math.PI / 180;
-            _ctx.translate(centerPoint.x, centerPoint.y);
-            _ctx.rotate(rad);
-            _ctx.drawImage(img,
-                offset.x,
-                offset.y,
-                offset.width,
-                offset.height,
-                size.width / 2 * -1,
-                size.height / 2 * -1,
-                size.width,
-                size.height);
-            _ctx.rotate(rad * -1);
-            _ctx.translate(centerPoint.x * -1, centerPoint.y * -1);
-        };
+            const _getCenterPoint = function (pos, size) {
+                return {
+                    x: pos.x + size.width / 2,
+                    y: pos.y + size.height / 2
+                };
+            };
 
-        const _getCenterPoint = function (pos, size) {
-            return {
-                x: pos.x + size.width / 2,
-                y: pos.y + size.height / 2
+            rendererObj.renderSprite = function (spriteSheet, spriteName, destPos, destSize, fromCenter) {
+                const $pos = game.getContainerInstance("$pos");
+                destPos = destPos || {
+                    x: 0,
+                    y: 0
+                };
+                const _offset = spriteSheet.getOffset(spriteName);
+                destSize = destSize || {
+                    height: _offset.height,
+                    width: _offset.width
+                };
+                const centerPoint = fromCenter ?
+                    destPos : $pos.getCenterPoint(destPos, destSize);
+                _drawImageFromCenterPoint(spriteSheet.getImage(), centerPoint,
+                    _offset, destSize,
+                    (_offset.rotate || 0) + (destPos.rotate || 0));
+            };
+
+            rendererObj.renderText = function (text, opt) {
+                const _ctx = rendererObj.getContext(rendererObj.layer);
+                if (opt.font)
+                    _ctx.font = opt.font;
+                if (opt.color)
+                    _ctx.fillStyle = opt.color;
+                if (opt.align)
+                    _ctx.textAlign = opt.align;
+                var maxWidth;
+                if (opt.maxWidth)
+                    maxWidth = opt.maxWidth;
+                _ctx.fillText(text, opt.pos.x, opt.pos.y, maxWidth);
             };
         };
-
-        rendererObj.renderSprite = function (spriteSheet, spriteName, destPos, destSize, fromCenter) {
-            const $pos = game.getContainerInstance("$pos");
-            destPos = destPos || {
-                x: 0,
-                y: 0
-            };
-            const _offset = spriteSheet.getOffset(spriteName);
-            destSize = destSize || {
-                height: _offset.height,
-                width: _offset.width
-            };
-            const centerPoint = fromCenter ?
-                destPos : $pos.getCenterPoint(destPos, destSize);
-            _drawImageFromCenterPoint(spriteSheet.getImage(), centerPoint,
-                _offset, destSize,
-                (_offset.rotate || 0) + (destPos.rotate || 0));
+        this.fromLayer = function (layer) {
+            var renderer = new ORenderer(layer);
+            renderer.getContext = game.renderer.getContext;
+            return renderer;
         };
-
-        rendererObj.renderText = function (text, opt) {
-            const _ctx = rendererObj.getContext(rendererObj.layer);
-            if (opt.font)
-                _ctx.font = opt.font;
-            if (opt.color)
-                _ctx.fillStyle = opt.color;
-            if (opt.align)
-                _ctx.textAlign = opt.align;
-            var maxWidth;
-            if (opt.maxWidth)
-                maxWidth = opt.maxWidth;
-            _ctx.fillText(text, opt.pos.x, opt.pos.y, maxWidth);
+        this.fromContext = function (context) {
+            var renderer = new ORenderer();
+            renderer.getContext = function(){return context;};
+            return renderer;
+        };
+        this.renderNow = function(fn){
+            if (!_.isFunction(fn)) return;
+            fn(game.renderer.canvasGame.getContext());
         };
     };
-    var renderer = new ORenderer();
-    this.fromLayer = function (layer) {
-        renderer.getContext = game.renderer.getContext;
-        renderer.layer = layer;
-        return renderer;
-    };
-};
+})(Utils);
 const SpriteInjection = (function (SpriteSheet) {
     return function () {
         this.create = function (image, data) {
@@ -687,9 +688,6 @@ const ModuleManager = (function (asyncLoop) {
         }, cb);
     };
     const _renderAll = function () {
-        // console.log(_modules.filter(function(m){
-        //     return m.type === "playerModule";
-        // }));
         _modules.forEach(function (m) {
             if (m.loaded){
                 m.update();

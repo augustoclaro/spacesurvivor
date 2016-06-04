@@ -1,8 +1,20 @@
 spaceship.state("mainState", [
-    "$timedFunction", "$module", "gameData",
-    function ($timedFunction, $module, gameData) {
+    "$timedFunction", "$module", "gameData", "$renderer",
+    function ($timedFunction, $module, gameData, $renderer) {
         return function () {
             this.load = function (cb) {
+                $renderer.renderNow(function(context){
+                    var renderer = $renderer.fromContext(context);
+                    renderer.renderText("Loading...", {
+                        font: "bold 25px Verdana",
+                        align: "center",
+                        color: "black",
+                        pos: {
+                            x: 300,
+                            y: 550
+                        }
+                    });
+                });
                 $module.load([
                     "bgModule",
                     "playerModule",

@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link href="css/game.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div gmf-app="SpaceshipApp"></div>
+    <script type="text/javascript" src="js/gamify.js"></script>
+    <!--App-->
+    <script type="text/javascript" src="js/spaceship.js"></script>
+    <!--States-->
+    <script type="text/javascript" src="js/states/startState.js"></script>
+    <script type="text/javascript" src="js/states/mainState.js"></script>
+    <script type="text/javascript" src="js/states/gameOverState.js"></script>
+    <!--Modules-->
+    <script type="text/javascript" src="js/modules/meteorModule.js"></script>
+    <script type="text/javascript" src="js/modules/bulletModule.js"></script>
+    <script type="text/javascript" src="js/modules/bgModule.js"></script>
+    <script type="text/javascript" src="js/modules/playerModule.js"></script>
+    <script type="text/javascript" src="js/modules/scoreModule.js"></script>
+    <script type="text/javascript" src="js/modules/startScreenModule.js"></script>
+    <script type="text/javascript" src="js/modules/gameOverScreenModule.js"></script>
+    <!--services-->
+    <script type="text/javascript" src="js/services/randomService.js"></script>
+    <script type="text/javascript" src="js/services/animationService.js"></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            spaceship.start();            
+        };
+    </script>
+</body>
+
+</html>

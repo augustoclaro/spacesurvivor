@@ -23,11 +23,12 @@ spaceship.module("gameOverScreenModule", [
             };
             this.update = function () { };
             this.render = function () {
-                $renderer.renderSprite(_logoSprite, "logo", {
+                var render = $renderer.fromLayer(0);
+                render.renderSprite(_logoSprite, "logo", {
                     x: 5,
                     y: 20
                 }, _logoSize);
-                $renderer.renderText("GAME OVER", {
+                render.renderText("GAME OVER", {
                     font: "bold 70px Verdana",
                     align: "center",
                     color: "white",
@@ -36,7 +37,7 @@ spaceship.module("gameOverScreenModule", [
                         y: 250
                     }
                 });
-                $renderer.renderText("SCORE:", {
+                render.renderText("SCORE:", {
                     font: "bold 50px Verdana",
                     align: "center",
                     color: "white",
@@ -45,7 +46,7 @@ spaceship.module("gameOverScreenModule", [
                         y: 350
                     }
                 });
-                $renderer.renderText(gameData.points, {
+                render.renderText(gameData.points, {
                     font: "bold 50px Verdana",
                     align: "center",
                     color: "white",

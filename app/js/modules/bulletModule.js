@@ -20,7 +20,7 @@ spaceship.module("bulletModule", [
 
             };
             this.render = function () {
-                $renderer.renderSprite(_spriteSheet, "bullet", _pos, _size);
+                $renderer.fromLayer(1).renderSprite(_spriteSheet, "bullet", _pos, _size);
             };
             this.pos = _pos;
             this.size = _size;

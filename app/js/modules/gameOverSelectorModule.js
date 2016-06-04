@@ -39,7 +39,8 @@ spaceship.module("gameOverSelectorModule", [
             };
             this.render = function () {
                 const opts = ["Play again", "Change spaceship"];
-                $renderer.renderText(opts[0], {
+                var render = $renderer.fromLayer(0);
+                render.renderText(opts[0], {
                     maxWidth: 120,
                     font: "bold 20px Verdana",
                     align: "center",
@@ -49,7 +50,7 @@ spaceship.module("gameOverSelectorModule", [
                         y: 530
                     }
                 });
-                $renderer.renderText(opts[1], {
+                render.renderText(opts[1], {
                     font: "bold 20px Verdana",
                     align: "center",
                     color: "white",
@@ -58,8 +59,8 @@ spaceship.module("gameOverSelectorModule", [
                         y: 530
                     }
                 });
-                var selTxtWidth = $renderer.getContext().measureText(opts[selected]).width;
-                $renderer.renderText("Press space bar to select", {
+                var selTxtWidth = render.getContext(0).measureText(opts[selected]).width;
+                render.renderText("Press space bar to select", {
                     font: "bold 10px Verdana",
                     align: "center",
                     color: "white",
@@ -75,14 +76,14 @@ spaceship.module("gameOverSelectorModule", [
                     height: 20,
                     width: selTxtWidth
                 });
-                $renderer.renderLine({
+                render.renderLine({
                     x: selPos.x - 20,
                     y: selPos.y - 20
                 }, {
                     x: selPos.x + selTxtWidth + 20,
                     y: selPos.y - 20
                 }, 5, "white");
-                $renderer.renderLine({
+                render.renderLine({
                     x: selPos.x - 20,
                     y: selPos.y + 30
                 }, {

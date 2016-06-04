@@ -64,7 +64,7 @@ spaceship.module("playerModule", [
                     gameData.points += 10;
             };
             this.render = function () {
-                $renderer.renderSprite(_spriteSheet, "ship", playerObj.pos, playerObj.size);
+                $renderer.fromLayer(1).renderSprite(_spriteSheet, "ship", playerObj.pos, playerObj.size);
             };
         };
     }]);

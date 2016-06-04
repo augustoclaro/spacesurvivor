@@ -100,7 +100,7 @@ const Animation = (function (_, EventEmitter) {
         var _animated;
         
         const _render = function($renderer){
-            $renderer.renderSprite(_sprideSheet,
+            $renderer.fromLayer(_pos.layer || 0).renderSprite(_sprideSheet,
                                    _frames[animObj.frameIndex].sprite,
                                    _pos,
                                    _size);
@@ -170,6 +170,15 @@ const Canvas = (function () {
         var _imgData = this.context.getImageData(0, 0, this.element.width, this.element.height);
         canvasTo.getContext().putImageData(_imgData, 0, 0, 0, 0, this.element.width, this.element.height);
     };
+    
+    const _drawTo = function(canvasTo){
+        canvasTo.getContext().drawImage(
+            this.getElement(),
+            0, 0,
+            this.size.width,
+            this.size.height
+        );
+    };
 
     const _canvas = function (id, size) {
         this.element = document.createElement("canvas");
@@ -178,12 +187,14 @@ const Canvas = (function () {
         this.element.setAttribute("width", size.width);
         this.element.setAttribute("height", size.height);
         this.context = this.element.getContext("2d");
+        this.size = size;
     };
     _canvas.prototype = {
         clear: _clear,
         getElement: _getElement,
         getContext: _getContext,
-        transferTo: _transferTo
+        transferTo: _transferTo,
+        drawTo: _drawTo
     };
     return _canvas;
 })();
@@ -315,12 +326,22 @@ const Renderer = function (canvasGame, canvasBuffer) {
     if (!canvasBuffer)
         throw "No buffer canvas found.";
     const _ctx = canvasBuffer.getContext();
-    this.getContext = function () {
-        return _ctx;
+    const _layers = [];
+    this.getContext = function (layer) {
+        if (_layers.length <= layer)
+            for (var i = _layers.length; i<=layer; i++)
+                _layers.push(new Canvas("layer-canvas-"+i, canvasGame.size));
+        return _layers[layer].getContext();
     };
     this.render = function (action) {
         canvasBuffer.clear();
+        _layers.forEach(function(canvas){
+            canvas.clear();
+        });
         action();
+        _layers.forEach(function(canvas){
+            canvas.drawTo(canvasBuffer);
+        });
         canvasBuffer.transferTo(canvasGame);
     };
 };
@@ -512,96 +533,104 @@ const PosInjection = (function () {
     };
 })();
 const RendererInjection = function (game) {
-    var rendererObj = this;
-    rendererObj.getContext = function () {
-        return game.renderer.getContext();
-    };
-    rendererObj.renderCircle = function (destPos, radius, color) {
-        const _ctx = rendererObj.getContext();
-        _ctx.beginPath();
-        _ctx.fillStyle = color;
-        _ctx.arc(destPos.x, destPos.y, radius, 0, 2 * Math.PI, false);
-        _ctx.fill();
-        _ctx.closePath();
-    };
-    rendererObj.renderLine = function (from, to, lineWidth, color) {
-        const _ctx = rendererObj.getContext();
-        _ctx.beginPath();
-        if (color)
-            _ctx.strokeStyle = color;
-        if (lineWidth)
-            _ctx.lineWidth = lineWidth;
-        _ctx.moveTo(from.x, from.y);
-        _ctx.lineTo(to.x, to.y);
-        _ctx.stroke();
-        _ctx.closePath();
-    };
 
-    rendererObj.fillBG = function (color) {
-        const _ctx = rendererObj.getContext();
-        _ctx.beginPath();
-        _ctx.fillStyle = color;
-        _ctx.rect(0, 0, _ctx.canvas.width, _ctx.canvas.height);
-        _ctx.fill();
-        _ctx.closePath();
-    };
+    const ORenderer = function () {
+        var rendererObj = this;
+        rendererObj.layer = 0;
+        rendererObj.layers = {};
+        rendererObj.renderCircle = function (destPos, radius, color) {
+            const _ctx = rendererObj.getContext(rendererObj.layer);
+            _ctx.beginPath();
+            _ctx.fillStyle = color;
+            _ctx.arc(destPos.x, destPos.y, radius, 0, 2 * Math.PI, false);
+            _ctx.fill();
+            _ctx.closePath();
+        };
+        rendererObj.renderLine = function (from, to, lineWidth, color) {
+            const _ctx = rendererObj.getContext(rendererObj.layer);
+            _ctx.beginPath();
+            if (color)
+                _ctx.strokeStyle = color;
+            if (lineWidth)
+                _ctx.lineWidth = lineWidth;
+            _ctx.moveTo(from.x, from.y);
+            _ctx.lineTo(to.x, to.y);
+            _ctx.stroke();
+            _ctx.closePath();
+        };
 
-    const _drawImageFromCenterPoint = function (img, centerPoint, offset, size, deg) {
-        const _ctx = rendererObj.getContext();
-        deg = deg || 0;
-        var rad = deg * Math.PI / 180;
-        _ctx.translate(centerPoint.x, centerPoint.y);
-        _ctx.rotate(rad);
-        _ctx.drawImage(img,
-            offset.x,
-            offset.y,
-            offset.width,
-            offset.height,
-            size.width / 2 * -1,
-            size.height / 2 * -1,
-            size.width,
-            size.height);
-        _ctx.rotate(rad * -1);
-        _ctx.translate(centerPoint.x * -1, centerPoint.y * -1);
-    };
+        rendererObj.fillBG = function (color) {
+            const _ctx = rendererObj.getContext(rendererObj.layer);
+            _ctx.beginPath();
+            _ctx.fillStyle = color;
+            _ctx.rect(0, 0, _ctx.canvas.width, _ctx.canvas.height);
+            _ctx.fill();
+            _ctx.closePath();
+        };
 
-    const _getCenterPoint = function (pos, size) {
-        return {
-            x: pos.x + size.width / 2,
-            y: pos.y + size.height / 2
+        const _drawImageFromCenterPoint = function (img, centerPoint, offset, size, deg) {
+            const _ctx = rendererObj.getContext(rendererObj.layer);
+            deg = deg || 0;
+            var rad = deg * Math.PI / 180;
+            _ctx.translate(centerPoint.x, centerPoint.y);
+            _ctx.rotate(rad);
+            _ctx.drawImage(img,
+                offset.x,
+                offset.y,
+                offset.width,
+                offset.height,
+                size.width / 2 * -1,
+                size.height / 2 * -1,
+                size.width,
+                size.height);
+            _ctx.rotate(rad * -1);
+            _ctx.translate(centerPoint.x * -1, centerPoint.y * -1);
+        };
+
+        const _getCenterPoint = function (pos, size) {
+            return {
+                x: pos.x + size.width / 2,
+                y: pos.y + size.height / 2
+            };
+        };
+
+        rendererObj.renderSprite = function (spriteSheet, spriteName, destPos, destSize, fromCenter) {
+            const $pos = game.getContainerInstance("$pos");
+            destPos = destPos || {
+                x: 0,
+                y: 0
+            };
+            const _offset = spriteSheet.getOffset(spriteName);
+            destSize = destSize || {
+                height: _offset.height,
+                width: _offset.width
+            };
+            const centerPoint = fromCenter ?
+                destPos : $pos.getCenterPoint(destPos, destSize);
+            _drawImageFromCenterPoint(spriteSheet.getImage(), centerPoint,
+                _offset, destSize,
+                (_offset.rotate || 0) + (destPos.rotate || 0));
+        };
+
+        rendererObj.renderText = function (text, opt) {
+            const _ctx = rendererObj.getContext(rendererObj.layer);
+            if (opt.font)
+                _ctx.font = opt.font;
+            if (opt.color)
+                _ctx.fillStyle = opt.color;
+            if (opt.align)
+                _ctx.textAlign = opt.align;
+            var maxWidth;
+            if (opt.maxWidth)
+                maxWidth = opt.maxWidth;
+            _ctx.fillText(text, opt.pos.x, opt.pos.y, maxWidth);
         };
     };
-
-    rendererObj.renderSprite = function (spriteSheet, spriteName, destPos, destSize, fromCenter) {
-        const $pos = game.getContainerInstance("$pos");
-        destPos = destPos || {
-            x: 0,
-            y: 0
-        };
-        const _offset = spriteSheet.getOffset(spriteName);
-        destSize = destSize || {
-            height: _offset.height,
-            width: _offset.width
-        };
-        const centerPoint = fromCenter ?
-            destPos : $pos.getCenterPoint(destPos, destSize);
-        _drawImageFromCenterPoint(spriteSheet.getImage(), centerPoint,
-            _offset, destSize,
-            (_offset.rotate || 0) + (destPos.rotate || 0));
-    };
-
-    rendererObj.renderText = function (text, opt) {
-        const _ctx = rendererObj.getContext();
-        if (opt.font)
-            _ctx.font = opt.font;
-        if (opt.color)
-            _ctx.fillStyle = opt.color;
-        if (opt.align)
-            _ctx.textAlign = opt.align;
-        var maxWidth;
-        if (opt.maxWidth)
-            maxWidth = opt.maxWidth;
-        _ctx.fillText(text, opt.pos.x, opt.pos.y, maxWidth);
+    var renderer = new ORenderer();
+    this.fromLayer = function (layer) {
+        renderer.getContext = game.renderer.getContext;
+        renderer.layer = layer;
+        return renderer;
     };
 };
 const SpriteInjection = (function (SpriteSheet) {

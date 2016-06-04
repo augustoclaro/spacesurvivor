@@ -27,9 +27,10 @@ spaceship.module("bgModule", [
                     _renderRandomLine(i);
             };
             this.render = function () {
-                $renderer.fillBG("black");
+                const render = $renderer.fromLayer(0);
+                render.fillBG("black");
                 _stars.forEach(function (star) {
-                    $renderer.renderCircle(star, .5, "#fff");
+                    render.renderCircle(star, .5, "#fff");
                 });
             };
         };

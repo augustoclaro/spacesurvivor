@@ -16,7 +16,9 @@ spaceship.module("meteorModule", [
             };
             meteorObj.load = function (next) {
                 $collision.watch("destroyMeteor","meteorModule", "bulletModule", function(meteor, bullet){
-                    animationService.explosion($pos.getCenterPoint(meteor.pos, meteor.size));
+                    var animPos = $pos.getCenterPoint(meteor.pos, meteor.size);
+                    animPos.layer = 3;
+                    animationService.explosion(animPos);
                     $module.unload([meteor, bullet]);
                     gameData.points += 3 * parseInt(gameData.level, 10);
                     gameData.level += 3 * .0006;
@@ -56,7 +58,7 @@ spaceship.module("meteorModule", [
                 meteorObj.pos.rotate += _speed;
             };
             meteorObj.render = function () {
-                $renderer.renderSprite(_spriteSheet, "meteor", meteorObj.pos, meteorObj.size);
+                $renderer.fromLayer(2).renderSprite(_spriteSheet, "meteor", meteorObj.pos, meteorObj.size);
             };
         };
     }

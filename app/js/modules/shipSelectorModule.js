@@ -67,19 +67,20 @@ spaceship.module("shipSelectorModule", [
                 }
             };
             this.render = function () {
+                const render = $renderer.fromLayer(0);
                 _ships.forEach(function (ship) {
-                    $renderer.renderSprite(ship.sprite, "ship", ship.pos, ship.size, true);
+                   render.renderSprite(ship.sprite, "ship", ship.pos, ship.size, true);
                 });
                 var ship = _ships[selected];
                 var selPos = $pos.fromCenterPoint(ship.pos, ship.size);
-                $renderer.renderLine({
+                render.renderLine({
                     x: selPos.x - 10,
                     y: selPos.y - 10
                 }, {
                         x: selPos.x + ship.size.width + 10,
                         y: selPos.y - 10
                     }, 5);
-                $renderer.renderLine({
+                render.renderLine({
                     x: selPos.x - 10,
                     y: selPos.y + ship.size.height + 10
                 }, {

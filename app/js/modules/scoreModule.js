@@ -12,7 +12,7 @@ spaceship.module("scoreModule", [
             this.update = function () {
             };
             this.render = function () {
-                $renderer.renderText("Score: " + gameData.points,{
+                $renderer.fromLayer(3).renderText("Score: " + gameData.points,{
                     font: "20px Verdana",
                     color: "red",
                     pos: _pos

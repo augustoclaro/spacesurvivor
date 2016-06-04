@@ -32,12 +32,13 @@ spaceship.module("startScreenModule", [
             this.update = function () {
             };
             this.render = function () {
-                $renderer.renderSprite(_wpSprite, "wallpaper");
-                $renderer.renderSprite(_logoSprite, "logo", {
+                const render = $renderer.fromLayer(0);
+                render.renderSprite(_wpSprite, "wallpaper");
+                render.renderSprite(_logoSprite, "logo", {
                     x: 5,
                     y: 20    
                 }, _logoSize);
-                $renderer.renderText("Use arrows to move", {
+                render.renderText("Use arrows to move", {
                     maxWidth: 300,
                     font: "bold 30px Verdana",
                     align: "center",
@@ -47,7 +48,7 @@ spaceship.module("startScreenModule", [
                         y: 250
                     }
                 });
-                $renderer.renderText("Use space bar to shoot", {
+                render.renderText("Use space bar to shoot", {
                     maxWidth: 300,
                     font: "bold 30px Verdana",
                     align: "center",
@@ -57,7 +58,7 @@ spaceship.module("startScreenModule", [
                         y: 290
                     }
                 });
-                $renderer.renderText("Press space bar to select and start", {
+                render.renderText("Press space bar to select and start", {
                     font: "bold 25px Verdana",
                     align: "center",
                     color: "white",

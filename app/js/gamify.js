@@ -179,7 +179,7 @@ const Canvas = (function () {
             this.size.height
         );
     };
-
+    
     const _canvas = function (id, size) {
         this.element = document.createElement("canvas");
         if (id)
@@ -334,15 +334,24 @@ const Renderer = function (canvasGame, canvasBuffer) {
         return _layers[layer].getContext();
     };
     this.render = function (action) {
-        canvasBuffer.clear();
         _layers.forEach(function(canvas){
             canvas.clear();
         });
         action();
         _layers.forEach(function(canvas){
-            canvas.drawTo(canvasBuffer);
+            canvasGame.getContext().save();
+            canvas.drawTo(canvasGame);
+            canvasGame.getContext().restore();
         });
-        canvasBuffer.transferTo(canvasGame);
+        // canvasBuffer.clear();
+        // _layers.forEach(function(canvas){
+        //     canvas.clear();
+        // });
+        // action();
+        // _layers.forEach(function(canvas){
+        //     canvas.drawTo(canvasBuffer);
+        // });
+        // canvasBuffer.transferTo(canvasGame);
     };
 };
 const SpriteSheet = function (image, data) {
